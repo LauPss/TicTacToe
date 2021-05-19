@@ -1,9 +1,11 @@
 /* COLOR PALETTE: #98C1D9 #6969B3 #533A7B #4B244A #25171A */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fjalla+One&display=swap');
 
 body {
 	background-color: #25171a;
+	font-family: "Fjalla One", sans-serif;
 	margin: 0;
 }
 
@@ -35,7 +37,7 @@ div#gameboard {
 	grid-template-columns: 1fr 1fr 1fr;
 	grid-template-rows: 1fr 1fr 1fr;
 	height: 350px;
-	margin: 0 auto;
+	margin: 0 auto 20px auto;
 	width: 350px;
 }
 
@@ -51,9 +53,13 @@ div#gameboard {
 	cursor: pointer;
 }
 
+.cells.selected:hover {
+	cursor: not-allowed;
+}
+
 p {
 	color: #98c1d9;
-	font-size: 18pt;
+	font-size: 20pt;
 	margin-bottom: 7px;
 	margin-top: 7px;
 	text-align: center;
@@ -64,8 +70,10 @@ p {
 	border-radius: 25px;
 	background-color: #6969B3;
 	display: block;
+	font-family: "Fjalla One", sans-serif;
+	font-size: 15pt;
     margin: 0 auto;
-    padding: 2px 5px;
+    padding: 2px 7px;
 }
 
 button.hidden {

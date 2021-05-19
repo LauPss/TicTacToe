@@ -25,15 +25,24 @@ const playerFactory = (name, symbol, score) => {
 	return {name, symbol, score};
 };
 
-const player1 = playerFactory("Player 1", "O", 0);
-const player2 = playerFactory("Player 2", "X", 0);
+const player1 = playerFactory(prompt("Player 1's name:", "Player 1"), "O", 0);
+const player2 = playerFactory(prompt("Player 2's name:", "Player 2"), "X", 0);
+
+const nameChecker = (() => {
+	if (player1.name === "" || player1.name === null) {
+		player1.name = "Player 1";
+	}
+	if (player2.name === "" || player2.name === null) {
+		player2.name = "Player 2";
+	}
+})();
 
 const Status = (() => {
 	const container = document.getElementById("container");
 	const turnMessage = document.createElement("p");
 	const scoreMessage = document.createElement("p");
 	const restartButton = document.createElement("button");
-	turnMessage.innerText = "Player 1, it's your turn!";
+	turnMessage.innerText = `${player1.name}, it's your turn!`;
 	scoreMessage.innerText = `${player1.score} : ${player2.score}`;
 	restartButton.innerText = "Rematch?";
 	restartButton.id = "restart";
@@ -53,11 +62,11 @@ const cellSelector = (() => {
 				if (Status.playerOneTurn === true) {
 					cell.innerText = player1.symbol;
 					Status.playerOneTurn = false;
-					Status.turnMessage.innerText = "Player 2, it's your turn!";
+					Status.turnMessage.innerText = `${player2.name}, it's your turn!`;
 				} else {
 					cell.innerText = player2.symbol;
 					Status.playerOneTurn = true;
-					Status.turnMessage.innerText = "Player 1, it's your turn!";
+					Status.turnMessage.innerText = `${player1.name}, it's your turn!`;
 				}
 				cell.classList.add("selected");
 				
