@@ -1,0 +1,73 @@
+/* COLOR PALETTE: #98C1D9 #6969B3 #533A7B #4B244A #25171A */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
+
+body {
+	background-color: #25171a;
+	margin: 0;
+}
+
+div#container {
+	background-color: #4b244a;
+	border-style: none double;
+	border-width: 0 24px;
+	border-color: #25171a;
+	height: 100vh;
+	margin: 0 auto;
+	width: 60%;
+}
+
+h1 {
+	color: #98c1d9;
+	font-family: "Bebas Neue", cursive;
+	font-size: 60pt;
+	font-weight: 400;
+	padding-top: 30px;
+	letter-spacing: 4px;
+	margin-bottom: 20px;
+	margin-top: 0;
+	text-align: center;
+}
+
+div#gameboard {
+	border: 4px solid #6969b3;
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-template-rows: 1fr 1fr 1fr;
+	height: 350px;
+	margin: 0 auto;
+	width: 350px;
+}
+
+.cells {
+	border: 4px solid #6969B3;
+	background-color: #533a7b;
+	color: #98c1d9;
+	font-size: 60pt;
+}
+
+.cells:hover {
+	border-color: #98c1d9;
+	cursor: pointer;
+}
+
+p {
+	color: #98c1d9;
+	font-size: 18pt;
+	margin-bottom: 7px;
+	margin-top: 7px;
+	text-align: center;
+}
+
+#restart {
+	border: none;
+	border-radius: 25px;
+	background-color: #6969B3;
+	display: block;
+    margin: 0 auto;
+    padding: 2px 5px;
+}
+
+button.hidden {
+	visibility: hidden;
+}
