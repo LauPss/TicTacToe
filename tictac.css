@@ -26,9 +26,33 @@ h1 {
 	font-weight: 400;
 	padding-top: 30px;
 	letter-spacing: 4px;
-	margin-bottom: 20px;
+	margin-bottom: 0;
 	margin-top: 0;
 	text-align: center;
+}
+
+#menu {
+	display: flex;
+	justify-content: center;
+	width: 100%;
+}
+
+.buttons {
+	border: none;
+	background-color: #6969B3;
+	font-family: "Fjalla One", sans-serif;
+	font-size: 10pt;
+	margin: 0 13px 13px 13px;
+    padding: 3px 7px;
+    width: 120px;
+}
+
+.cpuIsOn {
+	background-color: #98c1d9;
+}
+
+.hidden {
+	opacity: 0.5;
 }
 
 div#gameboard {
@@ -63,19 +87,4 @@ p {
 	margin-bottom: 7px;
 	margin-top: 7px;
 	text-align: center;
-}
-
-#restart {
-	border: none;
-	border-radius: 25px;
-	background-color: #6969B3;
-	display: block;
-	font-family: "Fjalla One", sans-serif;
-	font-size: 15pt;
-    margin: 0 auto;
-    padding: 2px 7px;
-}
-
-button.hidden {
-	visibility: hidden;
 }

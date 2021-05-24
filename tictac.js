@@ -1,3 +1,25 @@
+const Menubuttons = (() => {
+	const menu = document.getElementById("menu");
+	const cpuButton = document.createElement("button");
+	const restartButton = document.createElement("button");
+	
+	cpuButton.classList.add("buttons");
+	restartButton.classList.add("buttons");
+	restartButton.classList.add("hidden");
+	
+	cpuButton.innerText = "Play against AI?";
+	restartButton.innerText = "Next round?";
+	
+	menu.appendChild(cpuButton);
+	menu.appendChild(restartButton);
+	
+	cpuButton.addEventListener("click", (e) => {
+		cpuButton.classList.add("cpuIsOn");
+	});
+	
+	return {cpuButton, restartButton};
+})();
+
 const Gameboard = (() => {
 	const gameboard = document.getElementById("gameboard");
 	
@@ -21,14 +43,16 @@ const Gameboard = (() => {
 	return {aa, ab, ac, ba, bb, bc, ca, cb, cc};
 })();
 
+/* players */
+
 const playerFactory = (name, symbol, score) => {
 	return {name, symbol, score};
 };
 
 const player1 = playerFactory(prompt("Player 1's name:", "Player 1"), "O", 0);
-const player2 = playerFactory(prompt("Player 2's name:", "Player 2"), "X", 0);
+const player2 = playerFactory(prompt("Player 2's or AI's name:", "Player 2"), "X", 0);
 
-const nameChecker = (() => {
+const Namecheck = (() => {
 	if (player1.name === "" || player1.name === null) {
 		player1.name = "Player 1";
 	}
@@ -37,77 +61,125 @@ const nameChecker = (() => {
 	}
 })();
 
+/* display messages */
+
 const Status = (() => {
 	const container = document.getElementById("container");
 	const turnMessage = document.createElement("p");
 	const scoreMessage = document.createElement("p");
-	const restartButton = document.createElement("button");
+	const playerOneTurn = true;
+	
 	turnMessage.innerText = `${player1.name}, it's your turn!`;
 	scoreMessage.innerText = `${player1.score} : ${player2.score}`;
-	restartButton.innerText = "Rematch?";
-	restartButton.id = "restart";
-	restartButton.classList.add("hidden");
+	
 	container.appendChild(turnMessage);
 	container.appendChild(scoreMessage);
-	container.appendChild(restartButton);
-	const playerOneTurn = true;
-	return {playerOneTurn, turnMessage, scoreMessage, restartButton};
+	
+	return {playerOneTurn, turnMessage, scoreMessage};
 })();
 
-const cellSelector = (() => {
+/* actual game */
+
+const Game = (() => {
 	const cellArray = document.querySelectorAll(".cells");
+	
 	cellArray.forEach(cell => {
+		
 		cell.addEventListener("click", (e) => {
+			
 			if (!cell.classList.contains("selected")) {
+				
 				if (Status.playerOneTurn === true) {
 					cell.innerText = player1.symbol;
+					cell.classList.add("selected");
 					Status.playerOneTurn = false;
 					Status.turnMessage.innerText = `${player2.name}, it's your turn!`;
+					Referee.winCheck();
+					if (Menubuttons.cpuButton.classList.contains("cpuIsOn")) {
+						const selectedCells = document.querySelectorAll(".selected");
+						
+						if (selectedCells.length !== 9) {
+							
+							const Cpuplay = () => {
+								const unselectedCells = document.querySelectorAll("button.cells:not(.selected)");
+								const randomIndex = Math.floor(Math.random() * unselectedCells.length);
+								const randomValidCell = unselectedCells[randomIndex];
+								randomValidCell.innerText = player2.symbol;
+								randomValidCell.classList.add("selected");
+							};
+							
+							Cpuplay();
+							Status.playerOneTurn = true;
+							Status.turnMessage.innerText = `${player1.name}, it's your turn!`;
+							Referee.winCheck();
+						}
+					}
 				} else {
 					cell.innerText = player2.symbol;
+					cell.classList.add("selected");
 					Status.playerOneTurn = true;
 					Status.turnMessage.innerText = `${player1.name}, it's your turn!`;
+					Referee.winCheck();
 				}
-				cell.classList.add("selected");
-				
-				const gameEnder = () => {
-					const selectedCells = document.querySelectorAll(".selected");
-					console.log(selectedCells);
-					if ((Gameboard.aa.classList.contains("selected") === true && Gameboard.aa.innerText === Gameboard.ab.innerText && Gameboard.ab.innerText === Gameboard.ac.innerText)
-					|| (Gameboard.ba.classList.contains("selected") === true && Gameboard.ba.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.bc.innerText)
-					|| (Gameboard.ca.classList.contains("selected") === true && Gameboard.ca.innerText === Gameboard.cb.innerText && Gameboard.cb.innerText === Gameboard.cc.innerText)
-					|| (Gameboard.aa.classList.contains("selected") === true && Gameboard.aa.innerText === Gameboard.ba.innerText && Gameboard.ba.innerText === Gameboard.ca.innerText)
-					|| (Gameboard.ab.classList.contains("selected") === true && Gameboard.ab.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.cb.innerText)
-					|| (Gameboard.ac.classList.contains("selected") === true && Gameboard.ac.innerText === Gameboard.bc.innerText && Gameboard.bc.innerText === Gameboard.cc.innerText)
-					|| (Gameboard.aa.classList.contains("selected") === true && Gameboard.aa.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.cc.innerText)
-					|| (Gameboard.ac.classList.contains("selected") === true && Gameboard.ac.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.ca.innerText)) {
-						if (Status.playerOneTurn === true) {
-							Status.turnMessage.innerText = "Player 2 wins! 🎊 🎉";
-							player2.score++;
-						} else {
-							Status.turnMessage.innerText = "Player 1 wins! 🎊 🎉";
-							player1.score++;
-						}		
-						const allCells = document.querySelectorAll(".cells");
-						allCells.forEach(cell => {
-							cell.classList.add("selected");
-						});
-						Status.scoreMessage.innerText = `${player1.score} : ${player2.score}`;
-						Status.restartButton.classList.toggle("hidden");
-					} else if (selectedCells.length === 9) {
-						Status.turnMessage.innerText = "It's a tie!";
-						Status.restartButton.classList.toggle("hidden");
-					}
-				};
-				gameEnder();
 			}
 		});
 	});
+})();	
+
+const Referee = (() => {
+	
+	const selectedCells = document.querySelectorAll(".selected");
+	
+	const winCheck = () => {
+		
+		const Columncheck = (() => {
+			const victory = ((Gameboard.aa.classList.contains("selected") && Gameboard.aa.innerText === Gameboard.ba.innerText && Gameboard.ba.innerText === Gameboard.ca.innerText)
+				|| (Gameboard.ab.classList.contains("selected") && Gameboard.ab.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.cb.innerText)
+				|| (Gameboard.ac.classList.contains("selected") && Gameboard.ac.innerText === Gameboard.bc.innerText && Gameboard.bc.innerText === Gameboard.cc.innerText)) ? true : false;
+			return {victory};
+		})();
+		
+		const Rowcheck = (() => {
+			const victory = ((Gameboard.aa.classList.contains("selected") && Gameboard.aa.innerText === Gameboard.ab.innerText && Gameboard.ab.innerText === Gameboard.ac.innerText)
+				|| (Gameboard.ba.classList.contains("selected") && Gameboard.ba.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.bc.innerText)
+				|| (Gameboard.ca.classList.contains("selected") && Gameboard.ca.innerText === Gameboard.cb.innerText && Gameboard.cb.innerText === Gameboard.cc.innerText)) ? true : false;
+			return {victory};
+		})();
+		
+		const Diagonalcheck = (() => {
+			const victory = ((Gameboard.aa.classList.contains("selected") && Gameboard.aa.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.cc.innerText)
+				|| (Gameboard.ac.classList.contains("selected") && Gameboard.ac.innerText === Gameboard.bb.innerText && Gameboard.bb.innerText === Gameboard.ca.innerText)) ? true : false;
+			return {victory};
+		})();
+							
+		if (Columncheck.victory || Rowcheck.victory || Diagonalcheck.victory) {
+			
+			if (Status.playerOneTurn === true) {
+				Status.turnMessage.innerText = "Player 2 wins! 🎊 🎉";
+				player2.score++;
+			} else {
+				Status.turnMessage.innerText = "Player 1 wins! 🎊 🎉";
+				player1.score++;
+			}
+					
+			const allCells = document.querySelectorAll(".cells");
+			
+			allCells.forEach(cell => {
+				cell.classList.add("selected");
+			});
+			
+			Status.scoreMessage.innerText = `${player1.score} : ${player2.score}`;
+			Menubuttons.restartButton.classList.remove("hidden");
+		} else if (selectedCells.length === 9) {
+			Status.turnMessage.innerText = "It's a tie!";
+			Menubuttons.restartButton.classList.remove("hidden");
+		}
+	}
+	return {winCheck};
 })();
 
-const restart = (() => {
-	Status.restartButton.addEventListener("click", (e) => {
-		console.log("hi");
+const Restart = (() => {
+	Menubuttons.restartButton.addEventListener("click", (e) => {
 		const allCells = document.querySelectorAll(".cells");
 		allCells.forEach(cell => {
 			cell.classList.remove("selected");
@@ -115,6 +187,6 @@ const restart = (() => {
 		});
 		Status.playerOneTurn = true;
 		Status.turnMessage.innerText = "Player 1, it's your turn!";
-		Status.restartButton.classList.toggle("hidden");
+		Menubuttons.restartButton.classList.toggle("hidden");
 	});
 })();
